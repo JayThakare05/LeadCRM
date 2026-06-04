@@ -708,8 +708,14 @@ const AuthPage = () => {
           transform: scale(1.04);
         }
 
-        /* ── Mobile responsive styles ────────────────────────────────────── */
         @media (max-width: 680px) {
+          .ap-page {
+            flex-direction: column;
+            padding: 40px 16px;
+            min-height: 100vh;
+            height: auto;
+            justify-content: center;
+          }
           .ap-demo-badge {
             position: relative;
             top: auto;
