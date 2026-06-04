@@ -2,7 +2,7 @@
 
 A full-stack CRM application for managing sales leads through the entire pipeline. Built with the MERN stack (MongoDB, Express.js, React.js, Node.js).
 
-![Dashboard Preview](screenshots/dashboard.png)
+![Dashboard Preview](dashboard.png)
 
 ---
 
