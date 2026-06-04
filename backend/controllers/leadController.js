@@ -129,8 +129,8 @@ const updateLead = async (req, res, next) => {
       req.params.id,
       { ...req.body },
       {
-        new: true,          // Return the updated document
-        runValidators: true, // Run schema validators on update
+        returnDocument: 'after', // Return the updated document
+        runValidators: true,      // Run schema validators on update
       }
     );
 

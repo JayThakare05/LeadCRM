@@ -1,82 +1,94 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { BarChart3, Plus, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { LogOut, Menu, X } from 'lucide-react';
+import { useAuth } from '../context/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 /**
- * Navbar — app logo on left, nav links on right.
- * Responsive: hamburger menu on mobile (≤ 768px).
+ * Navbar — Logo on left, Logout button on right.
+ * No navigation links — user uses the Add Lead button in Dashboard instead.
  */
+
+/**
+ * Inline CRM Icon for Navbar
+ */
+const NavCRMIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="4" y="28" width="8" height="16" rx="2" fill="#fff" opacity="0.9"/>
+    <rect x="16" y="18" width="8" height="26" rx="2" fill="#fff"/>
+    <rect x="28" y="10" width="8" height="34" rx="2" fill="#fff" opacity="0.9"/>
+    <path d="M40 8 L44 4 M44 4 L44 10 M44 4 L38 4" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M6 26 L18 16 L30 8 L42 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.7"/>
+  </svg>
+);
+
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const location = useLocation();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const isActive = (path) => location.pathname === path;
-
-  const closeMenu = () => setMenuOpen(false);
+  const handleLogout = () => {
+    logout();
+    toast.success('Logged out successfully');
+    navigate('/login');
+  };
 
   return (
     <nav className="navbar" role="navigation" aria-label="Main navigation">
       <div className="navbar-inner">
         {/* Logo */}
-        <Link to="/" className="navbar-logo" onClick={closeMenu}>
+        <Link to="/" className="navbar-logo">
           <div className="logo-icon">
-            <BarChart3 size={18} />
+            <NavCRMIcon />
           </div>
           <span className="logo-text">LeadCRM</span>
         </Link>
 
-        {/* Desktop Nav Links */}
-        <ul className="navbar-links hide-mobile">
-          <li>
-            <Link
-              to="/"
-              className={`nav-link ${isActive('/') ? 'active' : ''}`}
-              id="nav-dashboard"
-            >
-              Dashboard
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="/add"
-              className="btn btn-primary nav-add-btn"
-              id="nav-add-lead"
-            >
-              <Plus size={16} /> Add Lead
-            </Link>
-          </li>
-        </ul>
+        {/* Right side: username + logout */}
+        <div className="navbar-right hide-mobile">
+          {user && (
+            <span className="navbar-username">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ opacity: 0.6 }}><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              {user.username}
+            </span>
+          )}
+          <button
+            className="btn btn-logout"
+            onClick={handleLogout}
+            id="navbar-logout-btn"
+            aria-label="Log out"
+          >
+            <LogOut size={15} />
+            Log Out
+          </button>
+        </div>
 
-        {/* Mobile Hamburger */}
+        {/* Mobile hamburger */}
         <button
           className="hamburger hide-desktop"
-          onClick={() => setMenuOpen((prev) => !prev)}
+          onClick={() => setMenuOpen(p => !p)}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
         >
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </div>
 
-      {/* Mobile Dropdown Menu */}
+      {/* Mobile dropdown */}
       {menuOpen && (
         <div className="mobile-menu hide-desktop">
-          <Link
-            to="/"
-            className={`mobile-nav-link ${isActive('/') ? 'active' : ''}`}
-            onClick={closeMenu}
-            id="mobile-nav-dashboard"
+          {user && (
+            <div className="mobile-username">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              {user.username}
+            </div>
+          )}
+          <button
+            className="mobile-logout-btn"
+            onClick={() => { setMenuOpen(false); handleLogout(); }}
           >
-            Dashboard
-          </Link>
-          <Link
-            to="/add"
-            className="mobile-nav-link accent"
-            onClick={closeMenu}
-            id="mobile-nav-add-lead"
-          >
-            <Plus size={16} /> Add Lead
-          </Link>
+            <LogOut size={15} /> Log Out
+          </button>
         </div>
       )}
 
@@ -111,12 +123,12 @@ const Navbar = () => {
         .logo-icon {
           width: 34px;
           height: 34px;
-          background: var(--color-accent);
-          color: #fff;
-          border-radius: 8px;
+          background: linear-gradient(135deg, #4f46e5, #7c3aed);
+          border-radius: 9px;
           display: flex;
           align-items: center;
           justify-content: center;
+          box-shadow: 0 2px 8px rgba(79,70,229,0.3);
         }
         .logo-text {
           font-size: 18px;
@@ -124,32 +136,42 @@ const Navbar = () => {
           letter-spacing: -0.025em;
           color: var(--color-text-primary);
         }
-        .navbar-links {
+        .navbar-right {
           display: flex;
           align-items: center;
-          gap: 8px;
-          list-style: none;
+          gap: 12px;
         }
-        .nav-link {
-          padding: 6px 14px;
-          font-size: 14px;
+        .navbar-username {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 13px;
           font-weight: 500;
           color: var(--color-text-secondary);
-          text-decoration: none;
+          padding: 5px 10px;
+          background: var(--color-bg-secondary);
+          border-radius: var(--radius-full);
+          border: 1px solid var(--color-border);
+        }
+        .btn-logout {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 16px;
+          font-family: var(--font-family);
+          font-size: 13px;
+          font-weight: 500;
+          color: #dc2626;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
           border-radius: var(--radius-md);
+          cursor: pointer;
           transition: var(--transition);
         }
-        .nav-link:hover {
-          color: var(--color-text-primary);
-          background: var(--color-bg-hover);
-        }
-        .nav-link.active {
-          color: var(--color-accent);
-          background: var(--color-accent-light);
-        }
-        .nav-add-btn {
-          padding: 7px 16px;
-          font-size: 14px;
+        .btn-logout:hover {
+          background: #fee2e2;
+          border-color: #fca5a5;
+          transform: translateY(-1px);
         }
         .hamburger {
           background: none;
@@ -162,46 +184,47 @@ const Navbar = () => {
           align-items: center;
           transition: var(--transition);
         }
-        .hamburger:hover {
-          background: var(--color-bg-hover);
-        }
+        .hamburger:hover { background: var(--color-bg-hover); }
         .mobile-menu {
           background: var(--color-bg-primary);
           border-top: 1px solid var(--color-border);
           padding: 12px 16px;
           display: flex;
           flex-direction: column;
-          gap: 4px;
+          gap: 8px;
           animation: slideDown 0.2s ease;
         }
         @keyframes slideDown {
           from { opacity: 0; transform: translateY(-8px); }
           to   { opacity: 1; transform: translateY(0); }
         }
-        .mobile-nav-link {
+        .mobile-username {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--color-text-secondary);
+          padding: 8px 12px;
+          background: var(--color-bg-secondary);
+          border-radius: var(--radius-md);
+        }
+        .mobile-logout-btn {
           display: flex;
           align-items: center;
           gap: 8px;
           padding: 10px 14px;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 500;
-          color: var(--color-text-secondary);
-          text-decoration: none;
+          color: #dc2626;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
           border-radius: var(--radius-md);
+          cursor: pointer;
+          font-family: var(--font-family);
           transition: var(--transition);
         }
-        .mobile-nav-link:hover {
-          background: var(--color-bg-hover);
-          color: var(--color-text-primary);
-        }
-        .mobile-nav-link.active {
-          color: var(--color-accent);
-          background: var(--color-accent-light);
-        }
-        .mobile-nav-link.accent {
-          color: var(--color-accent);
-          font-weight: 600;
-        }
+        .mobile-logout-btn:hover { background: #fee2e2; }
       `}</style>
     </nav>
   );
