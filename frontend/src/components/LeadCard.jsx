@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Pencil, Trash2, Mail, Phone, Building2 } from 'lucide-react';
 import StatusBadge from './StatusBadge.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 /**
  * LeadCard — mobile card view (visible ≤ 768px).
@@ -11,6 +12,11 @@ import StatusBadge from './StatusBadge.jsx';
  */
 const LeadCard = ({ lead, onDelete }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const leadCreatorId = lead.createdBy?._id || lead.createdBy;
+  const currentUserId = user?.id || user?._id;
+  const canModify = currentUserId && leadCreatorId && leadCreatorId.toString() === currentUserId.toString();
 
   const formatDate = (dateStr) =>
     new Date(dateStr).toLocaleDateString('en-IN', {
@@ -54,22 +60,24 @@ const LeadCard = ({ lead, onDelete }) => {
       </div>
 
       {/* Card Footer */}
-      <div className="lead-card-footer">
-        <button
-          className="btn btn-secondary"
-          onClick={() => navigate(`/edit/${lead._id}`)}
-          aria-label={`Edit ${lead.name}`}
-        >
-          <Pencil size={14} /> Edit
-        </button>
-        <button
-          className="btn btn-danger"
-          onClick={() => onDelete(lead)}
-          aria-label={`Delete ${lead.name}`}
-        >
-          <Trash2 size={14} /> Delete
-        </button>
-      </div>
+      {canModify && (
+        <div className="lead-card-footer">
+          <button
+            className="btn btn-secondary"
+            onClick={() => navigate(`/edit/${lead._id}`)}
+            aria-label={`Edit ${lead.name}`}
+          >
+            <Pencil size={14} /> Edit
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={() => onDelete(lead)}
+            aria-label={`Delete ${lead.name}`}
+          >
+            <Trash2 size={14} /> Delete
+          </button>
+        </div>
+      )}
 
       <style>{`
         .lead-card {

@@ -117,6 +117,17 @@ const AuthPage = () => {
   /* ── Render ────────────────────────────────────────────────────────────── */
   return (
     <div className="ap-page">
+      {/* Demo Credentials Info Badge */}
+      <div className="ap-demo-badge">
+        <span className="ap-demo-title">Demo Credentials</span>
+        <div className="ap-demo-row">
+          <span>Username:</span> <strong>test</strong>
+        </div>
+        <div className="ap-demo-row">
+          <span>Password:</span> <strong>test123</strong>
+        </div>
+      </div>
+
       <div className={`ap-card ${isLogin ? '' : 'ap-register-mode'}`}>
 
         {/* ── Left half — Register form ─────────────────────────── */}
@@ -302,6 +313,43 @@ const AuthPage = () => {
           background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           padding: 20px;
           font-family: var(--font-family, 'Inter', system-ui, sans-serif);
+          position: relative;
+        }
+
+        /* DEMO BADGE */
+        .ap-demo-badge {
+          position: absolute;
+          top: 24px;
+          left: 24px;
+          background: rgba(255, 255, 255, 0.12);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: 10px 14px;
+          border-radius: 12px;
+          color: #fff;
+          font-size: 13px;
+          z-index: 100;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+          display: flex;
+          flex-direction: column;
+          gap: 3px;
+        }
+        .ap-demo-title {
+          font-weight: 700;
+          text-transform: uppercase;
+          font-size: 10px;
+          letter-spacing: 0.05em;
+          color: #c7d2fe;
+          margin-bottom: 2px;
+        }
+        .ap-demo-row {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+        }
+        .ap-demo-row span {
+          opacity: 0.75;
         }
 
         /* CARD */
@@ -662,6 +710,16 @@ const AuthPage = () => {
 
         /* ── Mobile responsive styles ────────────────────────────────────── */
         @media (max-width: 680px) {
+          .ap-demo-badge {
+            position: relative;
+            top: auto;
+            left: auto;
+            margin-bottom: 16px;
+            align-self: center;
+            width: 100%;
+            max-width: 420px;
+            box-sizing: border-box;
+          }
           .ap-card {
             flex-direction: column;
             max-width: 420px;

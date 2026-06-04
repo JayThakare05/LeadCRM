@@ -42,6 +42,11 @@ const leadSchema = new mongoose.Schema(
       maxlength: [500, 'Notes cannot exceed 500 characters'],
       default: '',
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Lead must be associated with a creator user'],
+    },
   },
   {
     // Automatically manages createdAt and updatedAt timestamps

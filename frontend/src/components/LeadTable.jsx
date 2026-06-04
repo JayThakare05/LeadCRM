@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Pencil, Trash2, ChevronUp, ChevronDown, Users } from 'lucide-react';
 import StatusBadge from './StatusBadge.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 /**
  * LeadTable — desktop table view (visible > 768px).
@@ -13,6 +14,7 @@ import StatusBadge from './StatusBadge.jsx';
  */
 const LeadTable = ({ leads, sortConfig, onSort, onDelete }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleSort = (field) => {
     const newOrder =
@@ -91,44 +93,62 @@ const LeadTable = ({ leads, sortConfig, onSort, onDelete }) => {
           </tr>
         </thead>
         <tbody>
-          {leads.map((lead) => (
-            <tr key={lead._id}>
-              <td>
-                <button
-                  className="lead-name-btn"
-                  onClick={() => navigate(`/edit/${lead._id}`)}
-                  title="Edit lead"
-                >
-                  {lead.name}
-                </button>
-              </td>
-              <td className="text-muted">{lead.email}</td>
-              <td className="text-muted">{lead.phone}</td>
-              <td>{lead.company}</td>
-              <td><StatusBadge status={lead.status} /></td>
-              <td className="text-muted">{formatDate(lead.createdAt)}</td>
-              <td>
-                <div className="action-btns">
-                  <button
-                    className="btn-icon edit"
-                    onClick={() => navigate(`/edit/${lead._id}`)}
-                    title="Edit lead"
-                    aria-label={`Edit ${lead.name}`}
-                  >
-                    <Pencil size={15} />
-                  </button>
-                  <button
-                    className="btn-icon delete"
-                    onClick={() => onDelete(lead)}
-                    title="Delete lead"
-                    aria-label={`Delete ${lead.name}`}
-                  >
-                    <Trash2 size={15} />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+            {leads.map((lead) => {
+              const leadCreatorId = lead.createdBy?._id || lead.createdBy;
+              const currentUserId = user?.id || user?._id;
+              const canModify = currentUserId && leadCreatorId && leadCreatorId.toString() === currentUserId.toString();
+
+              return (
+                <tr key={lead._id}>
+                  <td>
+                    {canModify ? (
+                      <button
+                        className="lead-name-btn"
+                        onClick={() => navigate(`/edit/${lead._id}`)}
+                        title="Edit lead"
+                      >
+                        {lead.name}
+                      </button>
+                    ) : (
+                      <span style={{ fontWeight: 500, color: 'var(--color-text-primary)' }}>{lead.name}</span>
+                    )}
+                  </td>
+                  <td className="text-muted">{lead.email}</td>
+                  <td className="text-muted">{lead.phone}</td>
+                  <td>{lead.company}</td>
+                  <td><StatusBadge status={lead.status} /></td>
+                  <td className="text-muted">{formatDate(lead.createdAt)}</td>
+                  <td>
+                    <div className="action-btns">
+                      {canModify ? (
+                        <>
+                          <button
+                            className="btn-icon edit"
+                            onClick={() => navigate(`/edit/${lead._id}`)}
+                            title="Edit lead"
+                            aria-label={`Edit ${lead.name}`}
+                          >
+                            <Pencil size={15} />
+                          </button>
+                          <button
+                            className="btn-icon delete"
+                            onClick={() => onDelete(lead)}
+                            title="Delete lead"
+                            aria-label={`Delete ${lead.name}`}
+                          >
+                            <Trash2 size={15} />
+                          </button>
+                        </>
+                      ) : (
+                        <span style={{ fontSize: '11px', color: 'var(--color-text-muted)', fontStyle: 'italic' }}>
+                          View Only
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
 

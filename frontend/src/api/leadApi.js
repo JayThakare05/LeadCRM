@@ -9,6 +9,18 @@ const api = axios.create({
   },
 });
 
+// Automatically inject JWT token into request headers
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('crm_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 // ─── API Functions ────────────────────────────────────────────────────────────
 
 /**

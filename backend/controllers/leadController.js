@@ -86,7 +86,15 @@ const createLead = async (req, res, next) => {
       });
     }
 
-    const lead = await Lead.create({ name, email, phone, company, status, notes });
+    const lead = await Lead.create({
+      name,
+      email,
+      phone,
+      company,
+      status,
+      notes,
+      createdBy: req.user.id,
+    });
 
     res.status(201).json({
       success: true,
@@ -125,14 +133,7 @@ const getLeadById = async (req, res, next) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const updateLead = async (req, res, next) => {
   try {
-    const lead = await Lead.findByIdAndUpdate(
-      req.params.id,
-      { ...req.body },
-      {
-        returnDocument: 'after', // Return the updated document
-        runValidators: true,      // Run schema validators on update
-      }
-    );
+    const lead = await Lead.findById(req.params.id);
 
     if (!lead) {
       return res.status(404).json({
@@ -140,6 +141,21 @@ const updateLead = async (req, res, next) => {
         message: 'Lead not found',
       });
     }
+
+    // Check authorization: only the creator can edit
+    if (!lead.createdBy || lead.createdBy.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to edit this lead',
+      });
+    }
+
+    const updates = { ...req.body };
+    delete updates.createdBy;
+    delete updates._id;
+
+    Object.assign(lead, updates);
+    await lead.save({ runValidators: true });
 
     res.json({
       success: true,
@@ -157,7 +173,7 @@ const updateLead = async (req, res, next) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const deleteLead = async (req, res, next) => {
   try {
-    const lead = await Lead.findByIdAndDelete(req.params.id);
+    const lead = await Lead.findById(req.params.id);
 
     if (!lead) {
       return res.status(404).json({
@@ -165,6 +181,16 @@ const deleteLead = async (req, res, next) => {
         message: 'Lead not found',
       });
     }
+
+    // Check authorization: only the creator can delete
+    if (!lead.createdBy || lead.createdBy.toString() !== req.user.id) {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to delete this lead',
+      });
+    }
+
+    await lead.deleteOne();
 
     res.json({
       success: true,

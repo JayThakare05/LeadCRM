@@ -8,8 +8,12 @@ const {
   deleteLead,
 } = require('../controllers/leadController');
 
+const { protect } = require('../middleware/authMiddleware');
+
 // ─── Lead Routes ──────────────────────────────────────────────────────────────
 // All routes are mounted at /api/leads in server.js
+
+router.use(protect);
 
 router.route('/')
   .get(getAllLeads)   // GET  /api/leads — list with search/filter/sort/paginate
