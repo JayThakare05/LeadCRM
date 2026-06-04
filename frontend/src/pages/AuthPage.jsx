@@ -664,45 +664,16 @@ const AuthPage = () => {
         @media (max-width: 680px) {
           .ap-card {
             flex-direction: column;
-            max-width: 400px;
+            max-width: 420px;
             min-height: unset;
+            border-radius: 16px;
           }
           .ap-brand-panel {
-            position: relative;
-            width: 100%;
-            height: auto;
-            min-height: 180px;
-            transform: none !important;
-            transition: none !important;
-          }
-          .ap-brand-inner {
-            height: auto;
-            overflow: visible;
-          }
-          .ap-brand-content {
-            position: relative !important;
-            top: auto !important;
-            left: auto !important;
-            width: 100% !important;
-            height: auto !important;
-            padding: 24px !important;
-            transform: none !important;
-            opacity: 1 !important;
-            transition: none !important;
-            display: none;
-          }
-          .ap-brand-content.ap-active {
-            display: flex;
-          }
-          .ap-brand-tag {
-            margin-bottom: 16px;
-          }
-          .ap-brand-cta {
-            display: none; /* Switch via mobile toggle inside forms */
+            display: none !important;
           }
           .ap-half {
             width: 100%;
-            padding: 32px 24px;
+            padding: 40px 24px;
           }
           .ap-form-wrap {
             transform: none !important;
