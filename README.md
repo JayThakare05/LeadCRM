@@ -2,7 +2,6 @@
 
 A full-stack CRM application for managing sales leads through the entire pipeline. Built with the MERN stack (MongoDB, Express.js, React.js, Node.js).
 
-![Dashboard Preview](dashboard.png)
 
 ---
 
@@ -251,13 +250,3 @@ The app will be available at `http://localhost:3000`
 
 ---
 
-## 📸 Screenshots
-
-> Add screenshots here after deployment
-
-| Page      | Screenshot |
-|-----------|-----------|
-| Dashboard | *placeholder* |
-| Add Lead  | *placeholder* |
-| Edit Lead | *placeholder* |
-| Mobile    | *placeholder* |
