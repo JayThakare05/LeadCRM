@@ -101,17 +101,13 @@ const LeadTable = ({ leads, sortConfig, onSort, onDelete }) => {
               return (
                 <tr key={lead._id}>
                   <td>
-                    {canModify ? (
-                      <button
-                        className="lead-name-btn"
-                        onClick={() => navigate(`/edit/${lead._id}`)}
-                        title="Edit lead"
-                      >
-                        {lead.name}
-                      </button>
-                    ) : (
-                      <span style={{ fontWeight: 500, color: 'var(--color-text-primary)' }}>{lead.name}</span>
-                    )}
+                    <button
+                      className="lead-name-btn"
+                      onClick={() => navigate(`/edit/${lead._id}`)}
+                      title={canModify ? "Edit lead" : "View lead details"}
+                    >
+                      {lead.name}
+                    </button>
                   </td>
                   <td className="text-muted">{lead.email}</td>
                   <td className="text-muted">{lead.phone}</td>

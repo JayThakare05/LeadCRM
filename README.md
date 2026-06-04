@@ -22,6 +22,15 @@ A full-stack CRM application for managing sales leads through the entire pipelin
 
 ---
 
+## 🔑 Demo Credentials
+
+For testing and previewing the system, you can use the pre-created test account:
+
+- **Username**: `test`
+- **Password**: `test123`
+
+---
+
 ## 🛠 Tech Stack
 
 | Layer     | Technology            | Version |
@@ -252,24 +261,3 @@ The app will be available at `http://localhost:3000`
 | Add Lead  | *placeholder* |
 | Edit Lead | *placeholder* |
 | Mobile    | *placeholder* |
-
----
-
-## 🔮 Future Improvements
-
-- [ ] User authentication with JWT (login/register)
-- [ ] Role-based access control (Admin / Salesperson)
-- [ ] Lead assignment to team members
-- [ ] Activity timeline per lead (calls, emails, meetings)
-- [ ] CSV import/export for bulk operations
-- [ ] Email integration for sending outreach
-- [ ] Analytics dashboard with charts (Recharts / Chart.js)
-- [ ] Lead source tracking (referral, LinkedIn, organic)
-- [ ] Pipeline kanban board view
-- [ ] Real-time updates with WebSockets
-
----
-
-## 📄 License
-
-MIT License — feel free to use and modify.

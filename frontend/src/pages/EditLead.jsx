@@ -6,11 +6,13 @@ import { useLeads } from '../context/LeadContext.jsx';
 import { getLeadById } from '../api/leadApi.js';
 import LeadForm from '../components/LeadForm.jsx';
 import Loader from '../components/Loader.jsx';
+import { useAuth } from '../context/AuthContext.jsx';
 
 const EditLead = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { editLead } = useLeads();
+  const { user } = useAuth();
 
   const [leadData, setLeadData]   = useState(null);
   const [fetchLoading, setFetchLoading] = useState(true);
@@ -67,20 +69,33 @@ const EditLead = () => {
         <ArrowLeft size={16} /> Back to Dashboard
       </button>
 
-      <div className="page-header">
-        <h1 className="page-title">Edit Lead</h1>
-        <p className="page-subtitle">Update the details for {leadData?.name}</p>
-      </div>
+      {leadData && (() => {
+        const leadCreatorId = leadData.createdBy?._id || leadData.createdBy;
+        const currentUserId = user?.id || user?._id;
+        const canModify = currentUserId && leadCreatorId && leadCreatorId.toString() === currentUserId.toString();
 
-      <div className="form-card card">
-        {leadData && (
-          <LeadForm
-            mode="edit"
-            initialData={leadData}
-            onSubmit={handleSubmit}
-          />
-        )}
-      </div>
+        return (
+          <>
+            <div className="page-header">
+              <h1 className="page-title">{canModify ? 'Edit Lead' : 'Lead Details'}</h1>
+              <p className="page-subtitle">
+                {canModify
+                  ? `Update the details for ${leadData.name}`
+                  : `Viewing details for ${leadData.name}`}
+              </p>
+            </div>
+
+            <div className="form-card card">
+              <LeadForm
+                mode="edit"
+                initialData={leadData}
+                onSubmit={handleSubmit}
+                readOnly={!canModify}
+              />
+            </div>
+          </>
+        );
+      })()}
 
       <style>{`
         .back-btn {

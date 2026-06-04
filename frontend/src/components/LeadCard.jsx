@@ -60,24 +60,35 @@ const LeadCard = ({ lead, onDelete }) => {
       </div>
 
       {/* Card Footer */}
-      {canModify && (
-        <div className="lead-card-footer">
+      <div className="lead-card-footer">
+        {canModify ? (
+          <>
+            <button
+              className="btn btn-secondary"
+              onClick={() => navigate(`/edit/${lead._id}`)}
+              aria-label={`Edit ${lead.name}`}
+            >
+              <Pencil size={14} /> Edit
+            </button>
+            <button
+              className="btn btn-danger"
+              onClick={() => onDelete(lead)}
+              aria-label={`Delete ${lead.name}`}
+            >
+              <Trash2 size={14} /> Delete
+            </button>
+          </>
+        ) : (
           <button
             className="btn btn-secondary"
+            style={{ width: '100%', justifyContent: 'center' }}
             onClick={() => navigate(`/edit/${lead._id}`)}
-            aria-label={`Edit ${lead.name}`}
+            aria-label={`View details for ${lead.name}`}
           >
-            <Pencil size={14} /> Edit
+            View Details
           </button>
-          <button
-            className="btn btn-danger"
-            onClick={() => onDelete(lead)}
-            aria-label={`Delete ${lead.name}`}
-          >
-            <Trash2 size={14} /> Delete
-          </button>
-        </div>
-      )}
+        )}
+      </div>
 
       <style>{`
         .lead-card {

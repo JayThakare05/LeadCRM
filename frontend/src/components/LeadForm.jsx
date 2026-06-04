@@ -12,7 +12,7 @@ const STATUSES = ['New', 'Contacted', 'Qualified', 'Converted', 'Lost'];
  *   initialData — pre-filled values for edit mode
  *   onSubmit    — async function(formData) → throws on error
  */
-const LeadForm = ({ mode = 'create', initialData = {}, onSubmit }) => {
+const LeadForm = ({ mode = 'create', initialData = {}, onSubmit, readOnly = false }) => {
   const navigate = useNavigate();
 
   // ── Form state ─────────────────────────────────────────────────────────────
@@ -112,6 +112,7 @@ const LeadForm = ({ mode = 'create', initialData = {}, onSubmit }) => {
             value={form.name}
             onChange={handleChange}
             autoComplete="name"
+            disabled={readOnly}
           />
           {errors.name && (
             <span className="form-error">
@@ -132,6 +133,7 @@ const LeadForm = ({ mode = 'create', initialData = {}, onSubmit }) => {
             value={form.email}
             onChange={handleChange}
             autoComplete="email"
+            disabled={readOnly}
           />
           {errors.email && (
             <span className="form-error">
@@ -152,6 +154,7 @@ const LeadForm = ({ mode = 'create', initialData = {}, onSubmit }) => {
             value={form.phone}
             onChange={handleChange}
             autoComplete="tel"
+            disabled={readOnly}
           />
           {errors.phone && (
             <span className="form-error">
@@ -172,6 +175,7 @@ const LeadForm = ({ mode = 'create', initialData = {}, onSubmit }) => {
             value={form.company}
             onChange={handleChange}
             autoComplete="organization"
+            disabled={readOnly}
           />
           {errors.company && (
             <span className="form-error">
@@ -190,6 +194,7 @@ const LeadForm = ({ mode = 'create', initialData = {}, onSubmit }) => {
               className="form-select"
               value={form.status}
               onChange={handleChange}
+              disabled={readOnly}
             >
               {STATUSES.map((s) => (
                 <option key={s} value={s}>{s}</option>
@@ -212,6 +217,7 @@ const LeadForm = ({ mode = 'create', initialData = {}, onSubmit }) => {
             value={form.notes}
             onChange={handleChange}
             maxLength={500}
+            disabled={readOnly}
           />
           <span className="char-count">{form.notes.length}/500</span>
         </div>
@@ -219,20 +225,33 @@ const LeadForm = ({ mode = 'create', initialData = {}, onSubmit }) => {
 
       {/* Action Buttons */}
       <div className="form-actions">
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={handleCancel}
-          disabled={loading}
-        >
-          Cancel
-        </button>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? <Loader inline /> : null}
-          {loading
-            ? mode === 'create' ? 'Creating...' : 'Saving...'
-            : mode === 'create' ? 'Add Lead' : 'Save Changes'}
-        </button>
+        {readOnly ? (
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={handleCancel}
+            style={{ minWidth: '120px' }}
+          >
+            Close Details
+          </button>
+        ) : (
+          <>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={handleCancel}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? <Loader inline /> : null}
+              {loading
+                ? mode === 'create' ? 'Creating...' : 'Saving...'
+                : mode === 'create' ? 'Add Lead' : 'Save Changes'}
+            </button>
+          </>
+        )}
       </div>
 
       <style>{`
